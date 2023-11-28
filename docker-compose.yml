@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  gns3-docker:
+    build:
+      context: ./host
+    ports:
+      - "3080:3080"
+    privileged: true
+    network_mode: host
+
+  alpine-quagga:
+    build:
+      context: ./router
+    ports:
+      - "179:179" # BGP
+      - "2601:2601" # Zebra
+      - "2604:2604" # OSPFD
+      - "2605:2605" # IS-IS
+    privileged: true
+    network_mode: host

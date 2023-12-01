@@ -1,20 +1,12 @@
-FROM alpine:latest
+FROM frrouting/frr:v8.2.2
 
-# Installation des dépendances nécessaires
-RUN apk --no-cache add quagga busybox
+RUN apk add bash util-linux
 
-# Configuration de Quagga (Zebra, BGPD, OSPFD, IS-IS)
-COPY zebra.conf /etc/quagga/zebra.conf
-COPY bgpd.conf /etc/quagga/bgpd.conf
-COPY ospfd.conf /etc/quagga/ospfd.conf
-COPY isisd.conf /etc/quagga/isisd.conf
+RUN echo "PS1='\h\\$ '" >> /etc/profile
+ENV BASH_ENV=/etc/profile
 
-# Attribuer les bons droits aux fichiers de configuration
-RUN chown quagga.quaggavty /etc/quagga/*.conf && \
-	chmod 640 /etc/quagga/*.conf
+WORKDIR /usr/lib/frr
 
-# Exposer les ports nécessaires
-EXPOSE 179 2601 2604 2605
+COPY daemons.conf /etc/frr/daemons
 
-# Commande pour lancer Zebra et les autres daemons de Quagga
-CMD ["sh", "-c", "zebra -d && bgpd -d && ospfd -d && isisd -d && tail -f /dev/null"]
+ENTRYPOINT [ "/usr/lib/frr/docker-start" ]

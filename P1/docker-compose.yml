@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  host_wil-1:
+    build:
+      context: ./host
+    # ports:
+    #   - "3080:3080" # Port pour l'interface utilisateur de GNS3
+    #   # Autres ports nécessaires pour GNS3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    # network_mode: host
+
+  router_wil:
+    build:
+      context: ./router
+    # ports:
+    #   - "179:179" # BGP
+    #   - "2601:2601" # Zebra
+    #   - "2604:2604" # OSPFD
+    #   - "2605:2605" # IS-IS
+    privileged: true
+    # network_mode: host
